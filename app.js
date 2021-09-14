@@ -5,7 +5,7 @@ require('dotenv').config()
 const db = mysql.createConnection(`mysql://root:${process.env.PASSWORD}@localhost:3306/employees_db`)
 
 // Array of the tables that make up the employees database.
-const tables = ['Departments', 'Roles', 'Employees']
+const tables = ['Departments', 'Roles', 'Employees', 'Exit']
 
 
 
@@ -60,10 +60,13 @@ const mainMenu = () => {
     .then(({ action }) => {
       switch (action) {
         case 'Add To a Table':
+          getTableSelection('add')
           break
         case 'View a Table':
+          getTableSelection('view')
           break
         case 'Update Employee Roles':
+          getTableSelection('udpate')
           break
         case 'Exit Program':
           console.log('Goodbye.')
