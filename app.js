@@ -1,5 +1,5 @@
 const mysql = require('mysql2')
-const { prompt } = require('prompt')
+const { prompt } = require('inquirer')
 require('dotenv').config()
 
 const db = mysql.createConnection(`mysql://root:${process.env.PASSWORD}@localhost:3306/employees_db`)
@@ -20,7 +20,7 @@ const getTableSelection = action => {
   prompt([
     {
       type: 'list',
-      title: 'table',
+      name: 'table',
       message: 'Select a table: ',
       choices: tables
     }
@@ -42,4 +42,40 @@ const getTableSelection = action => {
 
 }
 
+// Array of actions to choose from to manipulate or display tables.
+const actions = ['Add To a Table', 'View a Table', 'Update Employee Roles', 'Exit Program']
+
 // Main menu
+const mainMenu = () => {
+
+  // Prompt the user to select an action to take.
+  prompt([
+    {
+      type: 'list',
+      name: 'action',
+      message: 'Please an action to take',
+      choices: actions
+    }
+  ])
+    .then(({ action }) => {
+      switch (action) {
+        case 'Add To a Table':
+          break
+        case 'View a Table':
+          break
+        case 'Update Employee Roles':
+          break
+        case 'Exit Program':
+          console.log('Goodbye.')
+          process.exit()
+        default:
+          console.log('Invalid selection, terminating program.')
+          process.exit()
+      }
+    })
+    .catch(err => console.log(err))
+
+}
+
+// Begin program with the main menu.
+mainMenu()
