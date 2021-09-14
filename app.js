@@ -4,55 +4,17 @@ require('dotenv').config()
 
 const db = mysql.createConnection(`mysql://root:${process.env.PASSWORD}@localhost:3306/employees_db`)
 
-// Array of the tables that make up the employees database.
-const tables = ['Departments', 'Roles', 'Employees', 'Exit']
-
 
 
 // Add to DB
 // View DB
 // Update DB
 
-//Get table
-const getTableSelection = action => {
-
-  // Prompt the user for a table selection and return the selection.
-  prompt([
-    {
-      type: 'list',
-      name: 'table',
-      message: 'Select a table: ',
-      choices: tables
-    }
-  ])
-    .then(({ table }) => {
-      switch (table) {
-        case 'Departments':
-          console.log(`${table}: ${action}`)
-          break
-        case 'Roles':
-          console.log(`${table}: ${action}`)
-          break
-        case 'Employees':
-          console.log(`${table}: ${action}`)
-          break
-        case 'Exit Program':
-          console.log('Goodbye.')
-          process.exit()
-        default:
-          console.log('Invalid selection, terminating program.')
-          process.exit()
-      }
-    })
-    .catch(err => console.log(err))
-
-}
-
 // Array of actions to choose from to manipulate or display tables.
 const actions = ['Add To a Table', 'View a Table', 'Update Employee Roles', 'Exit Program']
 
-// Main menu
-const mainMenu = () => {
+//Get action
+const getActionSelection = table => {
 
   // Prompt the user to select an action to take.
   prompt([
@@ -66,13 +28,51 @@ const mainMenu = () => {
     .then(({ action }) => {
       switch (action) {
         case 'Add To a Table':
-          getTableSelection('add')
+          console.log(`${action} function.`)
           break
         case 'View a Table':
-          getTableSelection('view')
+          console.log(`${action} function.`)
           break
         case 'Update Employee Roles':
-          getTableSelection('udpate')
+          console.log(`${action} function.`)
+          break
+        case 'Exit Program':
+          console.log('Goodbye.')
+          process.exit()
+        default:
+          console.log('Invalid selection, terminating program.')
+          process.exit()
+      }
+    })
+    .catch(err => console.log(err))
+
+}
+
+// Array of the tables that make up the employees database.
+const tables = ['Departments', 'Roles', 'Employees', 'Exit']
+
+// Main menu
+const mainMenu = () => {
+
+  // Prompt the user for a table selection and return the selection.
+  prompt([
+    {
+      type: 'list',
+      name: 'table',
+      message: 'Select a table: ',
+      choices: tables
+    }
+  ])
+    .then(({ table }) => {
+      switch (table) {
+        case 'Departments':
+          getActionSelection('department')
+          break
+        case 'Roles':
+          getActionSelection('role')
+          break
+        case 'Employees':
+          getActionSelection('employee')
           break
         case 'Exit Program':
           console.log('Goodbye.')
