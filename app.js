@@ -36,6 +36,12 @@ const getTableSelection = action => {
         case 'Employees':
           console.log(`${table}: ${action}`)
           break
+        case 'Exit Program':
+          console.log('Goodbye.')
+          process.exit()
+        default:
+          console.log('Invalid selection, terminating program.')
+          process.exit()
       }
     })
     .catch(err => console.log(err))
