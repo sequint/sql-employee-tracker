@@ -85,11 +85,6 @@ const addToTable = table => {
           name: 'hasManager',
           message: 'Does this employee have a manager? (y/n): '
         }
-        // {
-        //   type: 'input',
-        //   name: 'manager_id',
-        //   message: `Enter employee manager's id (hit enter if they are the manager): `
-        // }
       ])
         .then(({ first_name, last_name, role_id, hasManager }) => {
           // Create a new department object to insert into the table.
