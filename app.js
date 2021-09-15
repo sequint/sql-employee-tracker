@@ -64,6 +64,69 @@ const addToTable = table => {
         })
       break
     case 'employee':
+      prompt([
+        {
+          type: 'input',
+          name: 'first_name',
+          message: `Enter the employee's first name: `
+        },
+        {
+          type: 'input',
+          name: 'last_name',
+          message: `Enter the employee's last name: `
+        },
+        {
+          type: 'input',
+          name: 'role_id',
+          message: 'Enter the role id for this employee: '
+        },
+        {
+          type: 'confirm',
+          name: 'hasManager',
+          message: 'Does this employee have a manager? (y/n): '
+        }
+        // {
+        //   type: 'input',
+        //   name: 'manager_id',
+        //   message: `Enter employee manager's id (hit enter if they are the manager): `
+        // }
+      ])
+        .then(({ first_name, last_name, role_id, hasManager }) => {
+          // Create a new department object to insert into the table.
+          let newEmployee = {
+            first_name: first_name,
+            last_name: last_name,
+            role_id: role_id
+          }
+
+          // If the employee has a manager prompt for manager id, insert current object.
+          if (hasManager) {
+            prompt([
+              {
+                type: 'input',
+                name: 'manager_id',
+                message: `Enter employee manager's id: `
+              }
+            ])
+              .then(({ manager_id }) => {
+                // Add manager id property to new employee object.
+                newEmployee.manager_id = manager_id
+                // Insert new employee object without a manager id.
+                db.query(`INSERT INTO ${table} SET ?`, newEmployee, err => {
+                  if (err) { console.log(err) }
+                  else { console.log(`New ${table} created!`) }
+                })
+              })
+          }
+          else {
+            // Insert new employee object without a manager id.
+            db.query(`INSERT INTO ${table} SET ?`, newEmployee, err => {
+              if (err) { console.log(err) }
+              else { console.log(`New ${table} created!`) }
+            })
+          }
+          
+        })
       break
     default:
       console.log('Invalid selection, terminating program.')
