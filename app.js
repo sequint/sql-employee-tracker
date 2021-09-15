@@ -205,62 +205,68 @@ const addToTable = table => {
 // View DB
 const viewEmployees = _ => {
 
-  let managerList = []
-
-  // Query the employee database to grab all managers and push them into an array.
-  db.query('SELECT * FROM employee WHERE role_id = 1', (err, employees) => {
+  db.query('SELECT * FROM employee', (err, employees) => {
     if (err) { console.log(err) }
-    else {
-      // Make manager list equal to employees list holding employees with an id of 1.
-      managerList = employees
+    else { 
+      console.log(employees)
+      prompt([
+        {
+          input: 'confirm',
+          name: 'mainMenuAsk',
+          message: 'Would you like to go back to the main menu? (y/n): '
+        }
+      ])
+        .then(({ mainMenuAsk }) => {
+          if (mainMenuAsk === 'y') {
+            mainMenu()
+          }
+          else {
+            console.log('Goodbye!')
+            process.exit()
+          }
+        })
     }
   })
 
-  // Prompt the user for a manager's id they would like to use.
-  // prompt([
-  //   {
-  //     type: 'input',
-  //     name: 'managerID',
-  //     message: 'Please enter the ID of the manager whos employees you would like to see: '
+  // Query the employee database to grab all managers and push them into an array.
+  // db.query('SELECT * FROM employee WHERE role_id = 1', (err, employees) => {
+  //   if (err) { console.log(err) }
+  //   else {
+  //     // Make manager list equal to employees list holding employees with an id of 1.
+  //     managerList = employees
   //   }
-  // ])
-  //   .then(({ managerID }) => {
-  //     db.query('SELECT * FROM employee WHERE ?', { manager_id: managerID }, (err, employees) => {
-  //       if (err) { console.log(err) }
-  //       console.log(employees)
-  //     })
-  //   })
+  // })
 
 }
 
 
 // Update DB
 
-// Array of actions to choose from to manipulate or display tables.
-const actions = ['Add To a Table', 'View a Table', 'Update Employee Roles', 'Exit Program']
+// Array of the tables that make up the employees database.
+const tables = ['Departments', 'Roles', 'Employees', 'Exit']
 
 //Get action
-const getActionSelection = table => {
+const tableSelect = () => {
 
-  // Prompt the user to select an action to take.
+  // Prompt the user for a table selection and return the selection.
   prompt([
     {
       type: 'list',
-      name: 'action',
-      message: 'Please an action to take',
-      choices: actions
+      name: 'table',
+      message: 'What would you like to add to?',
+      choices: tables
     }
   ])
-    .then(({ action }) => {
-      switch (action) {
-        case 'Add To a Table':
-          addToTable(table)
+    .then(({ table }) => {
+      switch (table) {
+        case 'Departments':
+          addToTable('department')
           break
-        case 'View a Table':
-          viewEmployees()
+        case 'Roles':
+          addToTable('role')
           break
-        case 'Update Employee Roles':
-          console.log(`${action} function.`)
+        case 'Employees':
+          addToTable('employee')
           break
         case 'Exit Program':
           console.log('Goodbye.')
@@ -274,31 +280,38 @@ const getActionSelection = table => {
 
 }
 
-// Array of the tables that make up the employees database.
-const tables = ['Departments', 'Roles', 'Employees', 'Exit']
+// Array of actions to choose from to manipulate or display tables.
+const actions = [
+  'View All Employees',
+  'View All Employees By Department',
+  'Add Department, Role, or Employee',
+  'Update Employee Role',
+  'Exit Program'
+]
 
 // Main menu
 const mainMenu = () => {
 
-  // Prompt the user for a table selection and return the selection.
+  // Prompt the user to select an action to take.
   prompt([
     {
       type: 'list',
-      name: 'table',
-      message: 'Select a table: ',
-      choices: tables
+      name: 'action',
+      message: 'What would you like to do?',
+      choices: actions
     }
   ])
-    .then(({ table }) => {
-      switch (table) {
-        case 'Departments':
-          getActionSelection('department')
+    .then(({ action }) => {
+      switch (action) {
+        case 'View All Employees':
+          viewEmployees()
           break
-        case 'Roles':
-          getActionSelection('role')
+        case 'View All Employees By Department':
+          viewEmployees()
           break
-        case 'Employees':
-          getActionSelection('employee')
+        case 'Add Department, Role, or Employee':
+          break
+        case 'Update Employee Roles':
           break
         case 'Exit Program':
           console.log('Goodbye.')
