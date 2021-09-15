@@ -27,7 +27,25 @@ const addToTable = table => {
 
           db.query(`INSERT INTO ${table} SET ?`, newDepartment, err => {
             if (err) { console.log(err) }
-            else { console.log(`New ${table} created!`) }
+            else { 
+              console.log(`New ${table} created!`)
+              prompt([
+                {
+                  input: 'confirm',
+                  name: 'mainMenuAsk',
+                  message: 'Would you like to go back to the main menu? (y/n): '
+                }
+              ])
+                .then(({ mainMenuAsk }) => {
+                  if (mainMenuAsk) {
+                    mainMenu()
+                  }
+                  else {
+                    console.log('Goodbye!')
+                    process.exit()
+                  }
+                })
+            }
           })
         })
       break
@@ -59,7 +77,25 @@ const addToTable = table => {
 
           db.query(`INSERT INTO ${table} SET ?`, newRole, err => {
             if (err) { console.log(err) }
-            else { console.log(`New ${table} created!`) }
+            else {
+              console.log(`New ${table} created!`)
+              prompt([
+                {
+                  input: 'confirm',
+                  name: 'mainMenuAsk',
+                  message: 'Would you like to go back to the main menu? (y/n): '
+                }
+              ])
+                .then(({ mainMenuAsk }) => {
+                  if (mainMenuAsk) {
+                mainMenu()
+              }
+                  else {
+                console.log('Goodbye!')
+                process.exit()
+              }
+            })
+        }
           })
         })
       break
@@ -109,7 +145,25 @@ const addToTable = table => {
                 // Insert new employee object without a manager id.
                 db.query(`INSERT INTO ${table} SET ?`, newEmployee, err => {
                   if (err) { console.log(err) }
-                  else { console.log(`New ${table} created!`) }
+                  else {
+                    console.log(`New ${table} created!`)
+                    prompt([
+                      {
+                        input: 'confirm',
+                        name: 'mainMenuAsk',
+                        message: 'Would you like to go back to the main menu? (y/n): '
+                      }
+                    ])
+                      .then(({ mainMenuAsk }) => {
+                        if (mainMenuAsk) {
+                      mainMenu()
+                    }
+                  else {
+                      console.log('Goodbye!')
+                      process.exit()
+                    }
+                  })
+              }
                 })
               })
           }
@@ -117,7 +171,25 @@ const addToTable = table => {
             // Insert new employee object without a manager id.
             db.query(`INSERT INTO ${table} SET ?`, newEmployee, err => {
               if (err) { console.log(err) }
-              else { console.log(`New ${table} created!`) }
+                          else { 
+              console.log(`New ${table} created!`)
+              prompt([
+                {
+                  input: 'confirm',
+                  name: 'mainMenuAsk',
+                  message: 'Would you like to go back to the main menu? (y/n): '
+                }
+              ])
+                .then(({ mainMenuAsk }) => {
+                  if (mainMenuAsk) {
+                    mainMenu()
+                  }
+                  else {
+                    console.log('Goodbye!')
+                    process.exit()
+                  }
+                })
+            }
             })
           }
           
@@ -131,6 +203,37 @@ const addToTable = table => {
 }
 
 // View DB
+const viewEmployees = _ => {
+
+  let managerList = []
+
+  // Query the employee database to grab all managers and push them into an array.
+  db.query('SELECT * FROM employee WHERE role_id = 1', (err, employees) => {
+    if (err) { console.log(err) }
+    else {
+      // Make manager list equal to employees list holding employees with an id of 1.
+      managerList = employees
+    }
+  })
+
+  // Prompt the user for a manager's id they would like to use.
+  // prompt([
+  //   {
+  //     type: 'input',
+  //     name: 'managerID',
+  //     message: 'Please enter the ID of the manager whos employees you would like to see: '
+  //   }
+  // ])
+  //   .then(({ managerID }) => {
+  //     db.query('SELECT * FROM employee WHERE ?', { manager_id: managerID }, (err, employees) => {
+  //       if (err) { console.log(err) }
+  //       console.log(employees)
+  //     })
+  //   })
+
+}
+
+
 // Update DB
 
 // Array of actions to choose from to manipulate or display tables.
@@ -154,7 +257,7 @@ const getActionSelection = table => {
           addToTable(table)
           break
         case 'View a Table':
-          console.log(`${action} function.`)
+          viewEmployees()
           break
         case 'Update Employee Roles':
           console.log(`${action} function.`)
