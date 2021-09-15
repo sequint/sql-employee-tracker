@@ -6,7 +6,42 @@ const db = mysql.createConnection(`mysql://root:${process.env.PASSWORD}@localhos
 
 
 
-// Add to DB
+// Add to table
+const addToTable = table => {
+
+  // Prompt user for new table information based on table selection.
+  switch (table) {
+    case 'department':
+      prompt([
+        {
+          type: 'input',
+          name: 'name',
+          message: 'Enter the department name: '
+        }
+      ])
+        .then(({ name }) => {
+          // Create a new department object to insert into the table.
+          let newDepartment = {
+            name: name
+          }
+
+          db.query(`INSERT INTO ${table} SET ?`, newDepartment, err => {
+            if (err) { console.log(err) }
+            else { console.log(`New ${table} created!`) }
+          })
+        })
+      break
+    case 'role':
+      break
+    case 'employee':
+      break
+    default:
+      console.log('Invalid selection, terminating program.')
+      process.exit()   
+  }
+
+}
+
 // View DB
 // Update DB
 
@@ -28,7 +63,7 @@ const getActionSelection = table => {
     .then(({ action }) => {
       switch (action) {
         case 'Add To a Table':
-          console.log(`${action} function.`)
+          addToTable(table)
           break
         case 'View a Table':
           console.log(`${action} function.`)
