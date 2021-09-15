@@ -32,6 +32,36 @@ const addToTable = table => {
         })
       break
     case 'role':
+      prompt([
+        {
+          type: 'input',
+          name: 'title',
+          message: 'Enter title of the role: '
+        },
+        {
+          type: 'input',
+          name: 'salary',
+          message: 'Enter the salary of the role: '
+        },
+        {
+          type: 'input',
+          name: 'depart_id',
+          message: 'Enter the department id for this role: '
+        }
+      ])
+        .then(({ title, salary, depart_id }) => {
+          // Create a new department object to insert into the table.
+          let newRole = {
+            title: title,
+            salary: salary,
+            depart_id: depart_id
+          }
+
+          db.query(`INSERT INTO ${table} SET ?`, newRole, err => {
+            if (err) { console.log(err) }
+            else { console.log(`New ${table} created!`) }
+          })
+        })
       break
     case 'employee':
       break
