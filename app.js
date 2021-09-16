@@ -471,7 +471,21 @@ const updateRole = () => {
                           else {
                             // Set new arry to equal employee names.
                             let employeeNames = employees.map(employee => employee.first_name + ' ' + employee.last_name)
-                            console.log(employeeNames)
+                            
+                            // Prompt the user for an employee that they would like to update.
+                            prompt([
+                              {
+                                type: 'list',
+                                name: 'managerChoice',
+                                message: `Which manager will be ${matchedEmployee[0].first_name}'s new manager?`,
+                                choices: employeeNames
+                              }
+                            ])
+                              .then(({ managerChoice }) => {
+                                console.log(managerChoice)
+                              })
+                              .catch(err => console.log(err))
+
                           }
                         })
                       }
