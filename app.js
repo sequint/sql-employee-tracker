@@ -482,7 +482,8 @@ const updateRole = () => {
                               }
                             ])
                               .then(({ managerChoice }) => {
-                                console.log(managerChoice)
+                                let matchedManager = employees.filter(employee => (employee.first_name + ' ' + employee.last_name) === managerChoice)
+                                console.log(matchedManager)
                               })
                               .catch(err => console.log(err))
 
