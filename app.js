@@ -4,7 +4,64 @@ require('dotenv').config()
 
 const db = mysql.createConnection(`mysql://root:${process.env.PASSWORD}@localhost:3306/employees_db`)
 
+// View DB
+const viewEmployees = _ => {
 
+  db.query('SELECT * FROM employee', (err, employees) => {
+    if (err) { console.log(err) }
+    else { 
+      console.log(employees)
+      prompt([
+        {
+          input: 'confirm',
+          name: 'mainMenuAsk',
+          message: 'Would you like to go back to the main menu? (y/n): '
+        }
+      ])
+        .then(({ mainMenuAsk }) => {
+          if (mainMenuAsk === 'y') {
+            mainMenu()
+          }
+          else {
+            console.log('Goodbye!')
+            process.exit()
+          }
+        })
+    }
+  })
+
+}
+
+const viewByDepartment = _ => {
+
+  // Create an emtpy array to hold department names that will be displayed in prompt.
+  let departmentNames = []
+
+  // Query all departments.
+  db.query('SELECT * FROM department', (err, departments) => {
+    departments.forEach(department => {
+      // Push department names into the empty array.
+      departmentNames.push(department.name)
+    })
+    console.log(departmentNames)
+    // Prompt the user to select a department to view.
+    prompt([
+      {
+        type: 'list',
+        name: 'departmentResponse',
+        message: 'Which department would you like to see?',
+        choices: departmentNames
+      }
+    ])
+      .then(({ departmentResponse }) => {
+        db.query(`SELECT * FROM employee LEFT JOIN role ON role.id = employee.role_id`, (err, joinedTable) => {
+          if (err) { console.log(err) }
+          else { console.log(joinedTable) }
+        })
+      })
+  })
+
+}
 
 // Add to table
 const addToTable = table => {
@@ -27,7 +84,7 @@ const addToTable = table => {
 
           db.query(`INSERT INTO ${table} SET ?`, newDepartment, err => {
             if (err) { console.log(err) }
-            else { 
+            else {
               console.log(`New ${table} created!`)
               prompt([
                 {
@@ -88,14 +145,14 @@ const addToTable = table => {
               ])
                 .then(({ mainMenuAsk }) => {
                   if (mainMenuAsk) {
-                mainMenu()
-              }
+                    mainMenu()
+                  }
                   else {
-                console.log('Goodbye!')
-                process.exit()
-              }
-            })
-        }
+                    console.log('Goodbye!')
+                    process.exit()
+                  }
+                })
+            }
           })
         })
       break
@@ -156,14 +213,14 @@ const addToTable = table => {
                     ])
                       .then(({ mainMenuAsk }) => {
                         if (mainMenuAsk) {
-                      mainMenu()
-                    }
-                  else {
-                      console.log('Goodbye!')
-                      process.exit()
-                    }
-                  })
-              }
+                          mainMenu()
+                        }
+                        else {
+                          console.log('Goodbye!')
+                          process.exit()
+                        }
+                      })
+                  }
                 })
               })
           }
@@ -171,93 +228,34 @@ const addToTable = table => {
             // Insert new employee object without a manager id.
             db.query(`INSERT INTO ${table} SET ?`, newEmployee, err => {
               if (err) { console.log(err) }
-                          else { 
-              console.log(`New ${table} created!`)
-              prompt([
-                {
-                  input: 'confirm',
-                  name: 'mainMenuAsk',
-                  message: 'Would you like to go back to the main menu? (y/n): '
-                }
-              ])
-                .then(({ mainMenuAsk }) => {
-                  if (mainMenuAsk) {
-                    mainMenu()
+              else {
+                console.log(`New ${table} created!`)
+                prompt([
+                  {
+                    input: 'confirm',
+                    name: 'mainMenuAsk',
+                    message: 'Would you like to go back to the main menu? (y/n): '
                   }
-                  else {
-                    console.log('Goodbye!')
-                    process.exit()
-                  }
-                })
-            }
+                ])
+                  .then(({ mainMenuAsk }) => {
+                    if (mainMenuAsk) {
+                      mainMenu()
+                    }
+                    else {
+                      console.log('Goodbye!')
+                      process.exit()
+                    }
+                  })
+              }
             })
           }
-          
+
         })
       break
     default:
       console.log('Invalid selection, terminating program.')
-      process.exit()   
+      process.exit()
   }
-
-}
-
-// View DB
-const viewEmployees = _ => {
-
-  db.query('SELECT * FROM employee', (err, employees) => {
-    if (err) { console.log(err) }
-    else { 
-      console.log(employees)
-      prompt([
-        {
-          input: 'confirm',
-          name: 'mainMenuAsk',
-          message: 'Would you like to go back to the main menu? (y/n): '
-        }
-      ])
-        .then(({ mainMenuAsk }) => {
-          if (mainMenuAsk === 'y') {
-            mainMenu()
-          }
-          else {
-            console.log('Goodbye!')
-            process.exit()
-          }
-        })
-    }
-  })
-
-}
-
-const viewByDepartment = _ => {
-
-  // Create an emtpy array to hold department names that will be displayed in prompt.
-  let departmentNames = []
-
-  // Query all departments.
-  db.query('SELECT * FROM department', (err, departments) => {
-    departments.forEach(department => {
-      // Push department names into the empty array.
-      departmentNames.push(department.name)
-    })
-    console.log(departmentNames)
-    // Prompt the user to select a department to view.
-    prompt([
-      {
-        type: 'list',
-        name: 'departmentResponse',
-        message: 'Which department would you like to see?',
-        choices: departmentNames
-      }
-    ])
-      .then(({ departmentResponse }) => {
-        db.query(`SELECT * FROM employee LEFT JOIN role ON role.id = employee.role_id`, (err, joinedTable) => {
-          if (err) { console.log(err) }
-          else { console.log(joinedTable) }
-        })
-      })
-  })
 
 }
 
@@ -329,6 +327,7 @@ const mainMenu = () => {
           viewByDepartment()
           break
         case 'Add Department, Role, or Employee':
+          tableSelect()
           break
         case 'Update Employee Roles':
           break
