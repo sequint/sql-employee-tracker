@@ -292,7 +292,48 @@ const addToTable = table => {
 
 }
 
-//Get action
+// Update Employee Role Function
+const updateRole = () => {
+
+  // Query all departments.
+  db.query('SELECT * FROM employee', (err, employees) => {
+    if (err) { console.log(err) }
+    else {
+      // Set new arry to equal employee names.
+      let employeeNames = employees.map(employee => employee.first_name + ' ' + employee.last_name)
+
+      // Prompt the user for an employee that they would like to update.
+      prompt([
+        {
+          type: 'list',
+          name: 'employeeChoice',
+          message: 'Which employee would you like to update?',
+          choices: employeeNames
+        }
+      ])
+        .then(({ employeeChoice }) => {
+          let matchedEmployee = employees.filter(employee => (employee.first_name + ' ' + employee.last_name) === employeeChoice)
+          console.table(matchedEmployee)
+
+          // prompt([
+          //   type: 'list',
+          //   name: 'columnChoice',
+          //   message: 'What would you like to update?',
+          //   choices: [matchedEmployee.id, matchedEmployee.first_name, matchedEmployee.last_name, matchedEmployee.role_id, matchedEmployee.manager_id]
+          // ])
+          //   .then(({ columnChoice }) => {
+          //     console.log(columenChoice)
+          //     console.table(matchedEmployee)
+          //   })
+
+        })
+        .catch(err => console.log(err))
+    }
+  })
+
+}
+
+// Select a Table Function
 const tableSelect = () => {
 
   // Array of the tables that make up the employees database.
@@ -327,36 +368,6 @@ const tableSelect = () => {
       }
     })
     .catch(err => console.log(err))
-
-}
-
-// Update Employee Role Function
-const updateRole = () => {
-
-  // Create an emtpy array to hold department names that will be displayed in prompt.
-  let employeeNames = []
-
-  // Query all departments.
-  db.query('SELECT * FROM employee', (err, employees) => {
-    if (err) { console.log(err) }
-    else {
-      // Set new arry to equal employee names.
-      employeeNames = employees.map(employee => employee.first_name + ' ' + employee.last_name)
-      console.log(employeeNames)
-
-      // // Prompt the user for an employee that they would like to update.
-      // prompt([
-      //   {
-      //     input: 'list',
-      //     name: 'employeeChoice',
-      //     message: 'Which employee would you like to update?',
-      //     choices: employeeNames
-      //   }
-      // ])
-    }
-  })
-
-
 
 }
 
