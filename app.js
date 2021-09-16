@@ -455,7 +455,6 @@ const updateRole = () => {
                     }
                   ])
                     .then(({ managerOrNot }) => {
-                      console.log(managerOrNot)
                       // If the person will not have a manager, set their manager id to null.
                       if(!managerOrNot) {
                         db.query(`UPDATE employee SET manager_id = NULL WHERE ${matchedEmployee[0].id}`, err => {
@@ -466,7 +465,15 @@ const updateRole = () => {
                         })
                       }
                       else {
-                        console.log('Set manager id.')
+                        // Query all employees.
+                        db.query('SELECT * FROM employee', (err, employees) => {
+                          if (err) { console.log(err) }
+                          else {
+                            // Set new arry to equal employee names.
+                            let employeeNames = employees.map(employee => employee.first_name + ' ' + employee.last_name)
+                            console.log(employeeNames)
+                          }
+                        })
                       }
                     })
                     .catch(err => console.log(err))
