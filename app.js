@@ -18,22 +18,7 @@ const viewEmployees = _ => {
     if (err) { console.log(err) }
     else { 
       console.table(allEmployees)
-      prompt([
-        {
-          input: 'confirm',
-          name: 'mainMenuAsk',
-          message: 'Would you like to go back to the main menu? (y/n): '
-        }
-      ])
-        .then(({ mainMenuAsk }) => {
-          if (mainMenuAsk === 'y') {
-            mainMenu()
-          }
-          else {
-            console.log('Goodbye!')
-            process.exit()
-          }
-        })
+      mainMenu()
     }
   })
 
@@ -72,23 +57,7 @@ const viewByDepartment = _ => {
             // Filter array of all employees to ones that match the department requested.
             let departmentFiltered = allEmployees.filter(employee => employee.name === departmentResponse)
             console.table(departmentFiltered)
-
-            prompt([
-              {
-                input: 'confirm',
-                name: 'mainMenuAsk',
-                message: 'Would you like to go back to the main menu? (y/n): '
-              }
-            ])
-              .then(({ mainMenuAsk }) => {
-                if (mainMenuAsk === 'y') {
-                  mainMenu()
-                }
-                else {
-                  console.log('Goodbye!')
-                  process.exit()
-                }
-              })
+            mainMenu()
           }
         })
       })
@@ -119,22 +88,7 @@ const addToTable = table => {
             if (err) { console.log(err) }
             else {
               console.log(`New ${table} created!`)
-              prompt([
-                {
-                  input: 'confirm',
-                  name: 'mainMenuAsk',
-                  message: 'Would you like to go back to the main menu? (y/n): '
-                }
-              ])
-                .then(({ mainMenuAsk }) => {
-                  if (mainMenuAsk) {
-                    mainMenu()
-                  }
-                  else {
-                    console.log('Goodbye!')
-                    process.exit()
-                  }
-                })
+              mainMenu()             
             }
           })
         })
@@ -181,22 +135,7 @@ const addToTable = table => {
                 if (err) { console.log(err) }
                 else {
                   console.log(`New ${table} created!`)
-                  prompt([
-                    {
-                      input: 'confirm',
-                      name: 'mainMenuAsk',
-                      message: 'Would you like to go back to the main menu? (y/n): '
-                    }
-                  ])
-                    .then(({ mainMenuAsk }) => {
-                      if (mainMenuAsk) {
-                        mainMenu()
-                      }
-                      else {
-                        console.log('Goodbye!')
-                        process.exit()
-                      }
-                    })
+                  mainMenu()                  
                 }
               })
             })
@@ -274,26 +213,10 @@ const addToTable = table => {
                           if (err) { console.log(err) }
                           else {
                             console.log(`New ${table} created!`)
-                            prompt([
-                              {
-                                input: 'confirm',
-                                name: 'mainMenuAsk',
-                                message: 'Would you like to go back to the main menu? (y/n): '
-                              }
-                            ])
-                              .then(({ mainMenuAsk }) => {
-                                if (mainMenuAsk) {
-                                  mainMenu()
-                                }
-                                else {
-                                  console.log('Goodbye!')
-                                  process.exit()
-                                }
-                              })
+                            mainMenu()
                           }
                         })
                       })
-
                   }
                 })
               }
@@ -303,22 +226,7 @@ const addToTable = table => {
                   if (err) { console.log(err) }
                   else {
                     console.log(`New ${table} created!`)
-                    prompt([
-                      {
-                        input: 'confirm',
-                        name: 'mainMenuAsk',
-                        message: 'Would you like to go back to the main menu? (y/n): '
-                      }
-                    ])
-                      .then(({ mainMenuAsk }) => {
-                        if (mainMenuAsk) {
-                          mainMenu()
-                        }
-                        else {
-                          console.log('Goodbye!')
-                          process.exit()
-                        }
-                      })
+                    mainMenu()
                   }
                 })
               }
@@ -381,23 +289,7 @@ const updateRole = () => {
                         if (err) { console.log(err) }
                         else {
                           console.log(`Update complete!`)
-                          prompt([
-                            {
-                              input: 'confirm',
-                              name: 'mainMenuAsk',
-                              message: 'Would you like to go back to the main menu? (y/n): '
-                            }
-                          ])
-                            .then(({ mainMenuAsk }) => {
-                              if (mainMenuAsk) {
-                                mainMenu()
-                              }
-                              else {
-                                console.log('Goodbye!')
-                                process.exit()
-                              }
-                            })
-                            .catch(err => console.log(err))
+                          mainMenu()
                         }
                       })
                     })
@@ -418,23 +310,7 @@ const updateRole = () => {
                         if (err) { console.log(err) }
                         else {
                           console.log(`Update complete!`)
-                          prompt([
-                            {
-                              input: 'confirm',
-                              name: 'mainMenuAsk',
-                              message: 'Would you like to go back to the main menu? (y/n): '
-                            }
-                          ])
-                            .then(({ mainMenuAsk }) => {
-                              if (mainMenuAsk) {
-                                mainMenu()
-                              }
-                              else {
-                                console.log('Goodbye!')
-                                process.exit()
-                              }
-                            })
-                            .catch(err => console.log(err))
+                          mainMenu()
                         }
                       })
                     })
@@ -461,23 +337,7 @@ const updateRole = () => {
                             if (err) { console.log(err) }
                             else {
                               console.log(`Update complete!`)
-                              prompt([
-                                {
-                                  input: 'confirm',
-                                  name: 'mainMenuAsk',
-                                  message: 'Would you like to go back to the main menu? (y/n): '
-                                }
-                              ])
-                                .then(({ mainMenuAsk }) => {
-                                  if (mainMenuAsk) {
-                                    mainMenu()
-                                  }
-                                  else {
-                                    console.log('Goodbye!')
-                                    process.exit()
-                                  }
-                                })
-                                .catch(err => console.log(err))
+                              mainMenu()
                             }
                           })
                         })
@@ -532,6 +392,7 @@ const updateRole = () => {
                                   if (err) { console.log(err) }
                                   else {
                                     console.log(`Update complete!`)
+                                    mainMenu()
                                   }
                                 })
 
