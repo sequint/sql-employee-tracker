@@ -446,6 +446,24 @@ const updateRole = () => {
 
                 case 'Manager':
                   
+                  // Prompt user for selection on if this person is a manager.
+                  prompt([
+                    {
+                      type: 'confirm',
+                      name: 'managerOrNot',
+                      message: `Will ${matchedEmployee[0].first_name} have a manager? (y/n): `
+                    }
+                  ])
+                    .then(({ managerOrNot }) => {
+                      console.log(managerOrNot)
+                      if(!managerOrNot) {
+                        console.log('Set to null.')
+                      }
+                      else {
+                        console.log('Set manager id.')
+                      }
+                    })
+                    .catch(err => console.log(err))
 
                   break
               }
