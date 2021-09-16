@@ -14,10 +14,10 @@ const viewEmployees = _ => {
         ON department.id = role.depart_id
         LEFT JOIN employee
         ON role.id = employee.role_id
-        `, (err, employees) => {
+        `, (err, allEmployees) => {
     if (err) { console.log(err) }
     else { 
-      console.table(employees)
+      console.table(allEmployees)
       prompt([
         {
           input: 'confirm',
@@ -66,21 +66,12 @@ const viewByDepartment = _ => {
         ON department.id = role.depart_id
         LEFT JOIN employee
         ON role.id = employee.role_id
-        `, (err, joinedTable) => {
+        `, (err, allEmployees) => {
           if (err) { console.log(err) }
           else {
-            // Create an array to hold employees.
-            let departmentEmployees = []
-            joinedTable.forEach(employee => {
-              if (employee.name === departmentResponse) {
-                // let departEmply = {
-                //   'First Name': employee.first_name,
-                //   'Last Name': employee.last_name,
-
-                // }
-                console.table(employee)
-              }
-            })
+            // Filter array of all employees to ones that match the department requested.
+            let departmentFiltered = allEmployees.filter(employee => employee.name === departmentResponse)
+            console.table(departmentFiltered)
           }
         })
       })
