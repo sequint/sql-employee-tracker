@@ -140,6 +140,17 @@ const addToTable = table => {
         })
       break
     case 'role':
+
+      // Create an array used to display department choices.
+      db.query('SELECT * FROM department', (err, departments) => {
+        if (err) { console.log(err) }
+        else {
+          let departmentChoices = departments.map(department => department.name)
+          console.log(departmentChoices)
+        }
+      })
+
+      // Create prompts for all role properties.
       prompt([
         {
           type: 'input',
@@ -152,9 +163,10 @@ const addToTable = table => {
           message: 'Enter the salary of the role: '
         },
         {
-          type: 'input',
+          type: 'list',
           name: 'depart_id',
-          message: 'Enter the department id for this role: '
+          message: 'Which department does this role go into?',
+          choices: ['one', 'two']
         }
       ])
         .then(({ title, salary, depart_id }) => {
@@ -494,7 +506,6 @@ const updateRole = () => {
 
                               })
                               .catch(err => console.log(err))
-
                           }
                         })
                       }
