@@ -228,19 +228,38 @@ const viewEmployees = _ => {
     }
   })
 
-  // Query the employee database to grab all managers and push them into an array.
-  // db.query('SELECT * FROM employee WHERE role_id = 1', (err, employees) => {
-  //   if (err) { console.log(err) }
-  //   else {
-  //     // Make manager list equal to employees list holding employees with an id of 1.
-  //     managerList = employees
-  //   }
-  // })
-
 }
 
+const viewByDepartment = _ => {
 
-// Update DB
+  // Create an emtpy array to hold department names that will be displayed in prompt.
+  let departmentNames = []
+
+  // Query all departments.
+  db.query('SELECT * FROM department', (err, departments) => {
+    departments.forEach(department => {
+      // Push department names into the empty array.
+      departmentNames.push(department.name)
+    })
+    console.log(departmentNames)
+    // Prompt the user to select a department to view.
+    prompt([
+      {
+        type: 'list',
+        name: 'departmentResponse',
+        message: 'Which department would you like to see?',
+        choices: departmentNames
+      }
+    ])
+      .then(({ departmentResponse }) => {
+        db.query(`SELECT * FROM employee LEFT JOIN role ON role.id = employee.role_id`, (err, joinedTable) => {
+          if (err) { console.log(err) }
+          else { console.log(joinedTable) }
+        })
+      })
+  })
+
+}
 
 // Array of the tables that make up the employees database.
 const tables = ['Departments', 'Roles', 'Employees', 'Exit']
@@ -307,7 +326,7 @@ const mainMenu = () => {
           viewEmployees()
           break
         case 'View All Employees By Department':
-          viewEmployees()
+          viewByDepartment()
           break
         case 'Add Department, Role, or Employee':
           break
