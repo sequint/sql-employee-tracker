@@ -146,62 +146,67 @@ const addToTable = table => {
         if (err) { console.log(err) }
         else {
           let departmentChoices = departments.map(department => department.name)
-          console.log(departmentChoices)
+          
+          // Create prompts for all role properties.
+          prompt([
+            {
+              type: 'input',
+              name: 'title',
+              message: 'Enter title of the role: '
+            },
+            {
+              type: 'input',
+              name: 'salary',
+              message: 'Enter the salary of the role: '
+            },
+            {
+              type: 'list',
+              name: 'departmentChoice',
+              message: 'Which department does this role go into?',
+              choices: departmentChoices
+            }
+          ])
+            .then(({ title, salary, departmentChoice }) => {
+              // Filter new array that matches the selected department to it's object.
+              departmentChoice = departments.filter(department => department.name === departmentChoice)
+
+              // Create a new department object to insert into the table.
+              let newRole = {
+                title: title,
+                salary: salary,
+                depart_id: departmentChoice[0].id
+              }
+
+              db.query(`INSERT INTO ${table} SET ?`, newRole, err => {
+                if (err) { console.log(err) }
+                else {
+                  console.log(`New ${table} created!`)
+                  prompt([
+                    {
+                      input: 'confirm',
+                      name: 'mainMenuAsk',
+                      message: 'Would you like to go back to the main menu? (y/n): '
+                    }
+                  ])
+                    .then(({ mainMenuAsk }) => {
+                      if (mainMenuAsk) {
+                        mainMenu()
+                      }
+                      else {
+                        console.log('Goodbye!')
+                        process.exit()
+                      }
+                    })
+                }
+              })
+            })
         }
       })
 
-      // Create prompts for all role properties.
-      prompt([
-        {
-          type: 'input',
-          name: 'title',
-          message: 'Enter title of the role: '
-        },
-        {
-          type: 'input',
-          name: 'salary',
-          message: 'Enter the salary of the role: '
-        },
-        {
-          type: 'list',
-          name: 'depart_id',
-          message: 'Which department does this role go into?',
-          choices: ['one', 'two']
-        }
-      ])
-        .then(({ title, salary, depart_id }) => {
-          // Create a new department object to insert into the table.
-          let newRole = {
-            title: title,
-            salary: salary,
-            depart_id: depart_id
-          }
-
-          db.query(`INSERT INTO ${table} SET ?`, newRole, err => {
-            if (err) { console.log(err) }
-            else {
-              console.log(`New ${table} created!`)
-              prompt([
-                {
-                  input: 'confirm',
-                  name: 'mainMenuAsk',
-                  message: 'Would you like to go back to the main menu? (y/n): '
-                }
-              ])
-                .then(({ mainMenuAsk }) => {
-                  if (mainMenuAsk) {
-                    mainMenu()
-                  }
-                  else {
-                    console.log('Goodbye!')
-                    process.exit()
-                  }
-                })
-            }
-          })
-        })
       break
+
     case 'employee':
+
       prompt([
         {
           type: 'input',
