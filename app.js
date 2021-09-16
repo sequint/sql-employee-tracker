@@ -313,18 +313,59 @@ const updateRole = () => {
       ])
         .then(({ employeeChoice }) => {
           let matchedEmployee = employees.filter(employee => (employee.first_name + ' ' + employee.last_name) === employeeChoice)
-          console.table(matchedEmployee)
+          const employeeCatagories = ['First Name', 'Last Name', 'Role', 'Manager']
 
-          // prompt([
-          //   type: 'list',
-          //   name: 'columnChoice',
-          //   message: 'What would you like to update?',
-          //   choices: [matchedEmployee.id, matchedEmployee.first_name, matchedEmployee.last_name, matchedEmployee.role_id, matchedEmployee.manager_id]
-          // ])
-          //   .then(({ columnChoice }) => {
-          //     console.log(columenChoice)
-          //     console.table(matchedEmployee)
-          //   })
+          prompt([
+            {
+              type: 'list',
+              name: 'columnChoice',
+              message: 'What would you like to update?',
+              choices: employeeCatagories
+            }
+          ])
+            .then(({ columnChoice }) => {
+              switch (columnChoice) {
+                case 'First Name':
+                  prompt([
+                    {
+                      type: 'input',
+                      name: 'newFirst',
+                      message: 'Enter a new First Name: '
+                    }
+                  ])
+                    .then(({ newFirst }) => {
+                      db.query(`UPDATE employee SET first_name = '${newFirst}' WHERE id = '${matchedEmployee[0].id}'`, err => {
+                        if (err) { console.log(err) }
+                        else {
+                          console.log(`Update complete!`)
+                          prompt([
+                            {
+                              input: 'confirm',
+                              name: 'mainMenuAsk',
+                              message: 'Would you like to go back to the main menu? (y/n): '
+                            }
+                          ])
+                            .then(({ mainMenuAsk }) => {
+                              if (mainMenuAsk) {
+                                mainMenu()
+                              }
+                              else {
+                                console.log('Goodbye!')
+                                process.exit()
+                              }
+                            })
+                        }
+                      })
+                    })
+                  break
+                case 'Last Name':
+                  break
+                case 'Role':
+                  break
+                case 'Manager':
+                  break
+              }
+            })
 
         })
         .catch(err => console.log(err))
