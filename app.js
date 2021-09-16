@@ -72,6 +72,23 @@ const viewByDepartment = _ => {
             // Filter array of all employees to ones that match the department requested.
             let departmentFiltered = allEmployees.filter(employee => employee.name === departmentResponse)
             console.table(departmentFiltered)
+
+            prompt([
+              {
+                input: 'confirm',
+                name: 'mainMenuAsk',
+                message: 'Would you like to go back to the main menu? (y/n): '
+              }
+            ])
+              .then(({ mainMenuAsk }) => {
+                if (mainMenuAsk === 'y') {
+                  mainMenu()
+                }
+                else {
+                  console.log('Goodbye!')
+                  process.exit()
+                }
+              })
           }
         })
       })
@@ -275,11 +292,11 @@ const addToTable = table => {
 
 }
 
-// Array of the tables that make up the employees database.
-const tables = ['Departments', 'Roles', 'Employees', 'Exit']
-
 //Get action
 const tableSelect = () => {
+
+  // Array of the tables that make up the employees database.
+  const tables = ['Departments', 'Roles', 'Employees', 'Exit']
 
   // Prompt the user for a table selection and return the selection.
   prompt([
@@ -310,6 +327,36 @@ const tableSelect = () => {
       }
     })
     .catch(err => console.log(err))
+
+}
+
+// Update Employee Role Function
+const updateRole = () => {
+
+  // Create an emtpy array to hold department names that will be displayed in prompt.
+  let employeeNames = []
+
+  // Query all departments.
+  db.query('SELECT * FROM employee', (err, employees) => {
+    if (err) { console.log(err) }
+    else {
+      // Set new arry to equal employee names.
+      employeeNames = employees.map(employee => employee.first_name + ' ' + employee.last_name)
+      console.log(employeeNames)
+
+      // // Prompt the user for an employee that they would like to update.
+      // prompt([
+      //   {
+      //     input: 'list',
+      //     name: 'employeeChoice',
+      //     message: 'Which employee would you like to update?',
+      //     choices: employeeNames
+      //   }
+      // ])
+    }
+  })
+
+
 
 }
 
@@ -345,7 +392,8 @@ const mainMenu = () => {
         case 'Add Department, Role, or Employee':
           tableSelect()
           break
-        case 'Update Employee Roles':
+        case 'Update Employee Role':
+          updateRole()
           break
         case 'Exit Program':
           console.log('Goodbye.')
