@@ -1,16 +1,23 @@
 const mysql = require('mysql2')
 const { prompt } = require('inquirer')
 require('dotenv').config()
+require('console.table')
 
 const db = mysql.createConnection(`mysql://root:${process.env.PASSWORD}@localhost:3306/employees_db`)
 
 // View DB
 const viewEmployees = _ => {
 
-  db.query('SELECT * FROM employee', (err, employees) => {
+  db.query(`
+        SELECT * FROM  department
+        LEFT JOIN role
+        ON department.id = role.depart_id
+        LEFT JOIN employee
+        ON role.id = employee.role_id
+        `, (err, employees) => {
     if (err) { console.log(err) }
     else { 
-      console.log(employees)
+      console.table(employees)
       prompt([
         {
           input: 'confirm',
@@ -43,7 +50,6 @@ const viewByDepartment = _ => {
       // Push department names into the empty array.
       departmentNames.push(department.name)
     })
-    console.log(departmentNames)
     // Prompt the user to select a department to view.
     prompt([
       {
@@ -55,17 +61,24 @@ const viewByDepartment = _ => {
     ])
       .then(({ departmentResponse }) => {
         db.query(`
-        SELECT * FROM employee
+        SELECT * FROM  department
         LEFT JOIN role
-        ON role.id = employee.role_id
-        LEFT JOIN department
         ON department.id = role.depart_id
+        LEFT JOIN employee
+        ON role.id = employee.role_id
         `, (err, joinedTable) => {
           if (err) { console.log(err) }
           else {
+            // Create an array to hold employees.
+            let departmentEmployees = []
             joinedTable.forEach(employee => {
               if (employee.name === departmentResponse) {
-                console.log(employee)
+                // let departEmply = {
+                //   'First Name': employee.first_name,
+                //   'Last Name': employee.last_name,
+
+                // }
+                console.table(employee)
               }
             })
           }
