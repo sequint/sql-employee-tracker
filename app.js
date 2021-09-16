@@ -54,9 +54,21 @@ const viewByDepartment = _ => {
       }
     ])
       .then(({ departmentResponse }) => {
-        db.query(`SELECT * FROM employee LEFT JOIN role ON role.id = employee.role_id`, (err, joinedTable) => {
+        db.query(`
+        SELECT * FROM employee
+        LEFT JOIN role
+        ON role.id = employee.role_id
+        LEFT JOIN department
+        ON department.id = role.depart_id
+        `, (err, joinedTable) => {
           if (err) { console.log(err) }
-          else { console.log(joinedTable) }
+          else {
+            joinedTable.forEach(employee => {
+              if (employee.name === departmentResponse) {
+                console.log(employee)
+              }
+            })
+          }
         })
       })
   })
