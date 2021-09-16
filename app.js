@@ -456,8 +456,14 @@ const updateRole = () => {
                   ])
                     .then(({ managerOrNot }) => {
                       console.log(managerOrNot)
+                      // If the person will not have a manager, set their manager id to null.
                       if(!managerOrNot) {
-                        console.log('Set to null.')
+                        db.query(`UPDATE employee SET manager_id = NULL WHERE ${matchedEmployee[0].id}`, err => {
+                          if (err) { console.log(err) }
+                          else {
+                            console.log('ID set to null.')
+                          }
+                        })
                       }
                       else {
                         console.log('Set manager id.')
