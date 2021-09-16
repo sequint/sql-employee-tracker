@@ -483,7 +483,15 @@ const updateRole = () => {
                             ])
                               .then(({ managerChoice }) => {
                                 let matchedManager = employees.filter(employee => (employee.first_name + ' ' + employee.last_name) === managerChoice)
-                                console.log(matchedManager)
+                                
+                                // Set new manager match employee id to the employees new manager id.
+                                db.query(`UPDATE employee SET manager_id = ${matchedManager[0].id} WHERE id = ${matchedEmployee[0].id}`, err => {
+                                  if (err) { console.log(err) }
+                                  else {
+                                    console.log(`Update complete!`)
+                                  }
+                                })
+
                               })
                               .catch(err => console.log(err))
 
