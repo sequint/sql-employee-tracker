@@ -354,15 +354,99 @@ const updateRole = () => {
                                 process.exit()
                               }
                             })
+                            .catch(err => console.log(err))
                         }
                       })
                     })
+                    .catch(err => console.log(err))
+
                   break
+
                 case 'Last Name':
+                  prompt([
+                    {
+                      type: 'input',
+                      name: 'newLast',
+                      message: 'Enter a new Last Name: '
+                    }
+                  ])
+                    .then(({ newLast }) => {
+                      db.query(`UPDATE employee SET last_name = '${newLast}' WHERE id = '${matchedEmployee[0].id}'`, err => {
+                        if (err) { console.log(err) }
+                        else {
+                          console.log(`Update complete!`)
+                          prompt([
+                            {
+                              input: 'confirm',
+                              name: 'mainMenuAsk',
+                              message: 'Would you like to go back to the main menu? (y/n): '
+                            }
+                          ])
+                            .then(({ mainMenuAsk }) => {
+                              if (mainMenuAsk) {
+                                mainMenu()
+                              }
+                              else {
+                                console.log('Goodbye!')
+                                process.exit()
+                              }
+                            })
+                            .catch(err => console.log(err))
+                        }
+                      })
+                    })
+                    .catch(err => console.log(err))
+
                   break
+
                 case 'Role':
+                  db.query('SELECT * FROM role', (err, roles) => {
+                    if (err) { console.log(err) }
+                    else {
+                      let roleNames = roles.map(role => role.title)
+                      prompt([
+                        {
+                          type: 'list',
+                          name: 'newRole',
+                          message: `Select a new Role for ${matchedEmployee[0].first_name}:`,
+                          choices: roleNames
+                        }
+                      ])
+                        .then(({ newRole }) => {
+                          let newID = roles.filter(role => role.title === newRole)
+                          db.query(`UPDATE employee SET role_id = '${newID[0].id}' WHERE id = '${matchedEmployee[0].id}'`, err => {
+                            if (err) { console.log(err) }
+                            else {
+                              console.log(`Update complete!`)
+                              prompt([
+                                {
+                                  input: 'confirm',
+                                  name: 'mainMenuAsk',
+                                  message: 'Would you like to go back to the main menu? (y/n): '
+                                }
+                              ])
+                                .then(({ mainMenuAsk }) => {
+                                  if (mainMenuAsk) {
+                                    mainMenu()
+                                  }
+                                  else {
+                                    console.log('Goodbye!')
+                                    process.exit()
+                                  }
+                                })
+                                .catch(err => console.log(err))
+                            }
+                          })
+                        })
+                        .catch(err => console.log(err))
+                    }
+                  })
+
                   break
+
                 case 'Manager':
+                  
+
                   break
               }
             })
