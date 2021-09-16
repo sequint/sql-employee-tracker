@@ -207,48 +207,97 @@ const addToTable = table => {
 
     case 'employee':
 
-      prompt([
-        {
-          type: 'input',
-          name: 'first_name',
-          message: `Enter the employee's first name: `
-        },
-        {
-          type: 'input',
-          name: 'last_name',
-          message: `Enter the employee's last name: `
-        },
-        {
-          type: 'input',
-          name: 'role_id',
-          message: 'Enter the role id for this employee: '
-        },
-        {
-          type: 'confirm',
-          name: 'hasManager',
-          message: 'Does this employee have a manager? (y/n): '
-        }
-      ])
-        .then(({ first_name, last_name, role_id, hasManager }) => {
-          // Create a new department object to insert into the table.
-          let newEmployee = {
-            first_name: first_name,
-            last_name: last_name,
-            role_id: role_id
-          }
+      // Create an array used to display role choices.
+      db.query('SELECT * FROM role', (err, roles) => {
+        if (err) { console.log(err) }
+        else {
+          let roleChoices = roles.map(role => role.title)
 
-          // If the employee has a manager prompt for manager id, insert current object.
-          if (hasManager) {
-            prompt([
-              {
-                type: 'input',
-                name: 'manager_id',
-                message: `Enter employee manager's id: `
+          prompt([
+            {
+              type: 'input',
+              name: 'first_name',
+              message: `Enter the employee's first name: `
+            },
+            {
+              type: 'input',
+              name: 'last_name',
+              message: `Enter the employee's last name: `
+            },
+            {
+              type: 'list',
+              name: 'roleChoice',
+              message: 'What role does this employee hold?',
+              choices: roleChoices
+            },
+            {
+              type: 'confirm',
+              name: 'hasManager',
+              message: 'Does this employee have a manager? (y/n): '
+            }
+          ])
+            .then(({ first_name, last_name, roleChoice, hasManager }) => {
+              // Filter new array that matches the selected department to it's object.
+              roleChoice = roles.filter(role => role.title === roleChoice)
+
+              // Create a new department object to insert into the table.
+              let newEmployee = {
+                first_name: first_name,
+                last_name: last_name,
+                role_id: roleChoice[0].id
               }
-            ])
-              .then(({ manager_id }) => {
-                // Add manager id property to new employee object.
-                newEmployee.manager_id = manager_id
+
+              // If the employee has a manager prompt for manager id, insert current object.
+              if (hasManager) {
+                db.query('SELECT * FROM employee', (err, employees) => {
+                  if (err) { console.log(err) }
+                  else {
+                    // Create manager choices array.
+                    let managerChoices = employees.map(employee => (employee.first_name + ' ' + employee.last_name))
+
+                    prompt([
+                      {
+                        type: 'list',
+                        name: 'managerChoice',
+                        message: `Who will be this person's manager?`,
+                        choices: managerChoices
+                      }
+                    ])
+                      .then(({ managerChoice }) => {
+                        // Filter employee array to find match object and reassign manager choice.
+                        managerChoice = employees.filter(employee => (employee.first_name + ' ' + employee.last_name) === managerChoice)
+
+                        // Add manager id property to new employee object.
+                        newEmployee.manager_id = managerChoice[0].id
+                        // Insert new employee object without a manager id.
+                        db.query(`INSERT INTO ${table} SET ?`, newEmployee, err => {
+                          if (err) { console.log(err) }
+                          else {
+                            console.log(`New ${table} created!`)
+                            prompt([
+                              {
+                                input: 'confirm',
+                                name: 'mainMenuAsk',
+                                message: 'Would you like to go back to the main menu? (y/n): '
+                              }
+                            ])
+                              .then(({ mainMenuAsk }) => {
+                                if (mainMenuAsk) {
+                                  mainMenu()
+                                }
+                                else {
+                                  console.log('Goodbye!')
+                                  process.exit()
+                                }
+                              })
+                          }
+                        })
+                      })
+
+                  }
+                })
+              }
+              else {
                 // Insert new employee object without a manager id.
                 db.query(`INSERT INTO ${table} SET ?`, newEmployee, err => {
                   if (err) { console.log(err) }
@@ -272,36 +321,13 @@ const addToTable = table => {
                       })
                   }
                 })
-              })
-          }
-          else {
-            // Insert new employee object without a manager id.
-            db.query(`INSERT INTO ${table} SET ?`, newEmployee, err => {
-              if (err) { console.log(err) }
-              else {
-                console.log(`New ${table} created!`)
-                prompt([
-                  {
-                    input: 'confirm',
-                    name: 'mainMenuAsk',
-                    message: 'Would you like to go back to the main menu? (y/n): '
-                  }
-                ])
-                  .then(({ mainMenuAsk }) => {
-                    if (mainMenuAsk) {
-                      mainMenu()
-                    }
-                    else {
-                      console.log('Goodbye!')
-                      process.exit()
-                    }
-                  })
               }
             })
-          }
+        }
+      })
 
-        })
       break
+
     default:
       console.log('Invalid selection, terminating program.')
       process.exit()
